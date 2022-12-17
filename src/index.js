@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import WithSubnavigation from './components/header';
+import SmallWithNavigation from './components/footer'
 import reportWebVitals from './reportWebVitals';
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, Container } from '@chakra-ui/react'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
-import { WagmiConfig, createClient, configureChains, mainnet } from 'wagmi'
+import { WagmiConfig, createClient, configureChains, mainnet, goerli } from 'wagmi'
 
 import { testtt } from './developerchain/developerChain';
 
@@ -16,14 +17,14 @@ import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet],
+  [goerli],
   [publicProvider()],
 )
 
 const client = createClient({
   autoConnect: true,
   connectors:[
-    new MetaMaskConnector({ chains }),
+    new MetaMaskConnector({ goerli }),
   ],
   provider,
 })
@@ -35,8 +36,9 @@ root.render(
   <React.StrictMode>
     <WagmiConfig client={client}>
     <ChakraProvider>
-      <WithSubnavigation></WithSubnavigation>
-      <App />
+        <WithSubnavigation></WithSubnavigation>
+        <App/>
+        <SmallWithNavigation></SmallWithNavigation>
     </ChakraProvider>
     </WagmiConfig>
   </React.StrictMode>

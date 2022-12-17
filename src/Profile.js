@@ -6,7 +6,7 @@ import {
   useEnsName,
   useBalance,
  } from 'wagmi'
- 
+ const tokenAddress = '0xF9f4Bb1aDCc0527FCa576532ea784EE90c1D7900'
  export function Profile() {
   const { address, connector, isConnected } = useAccount()
   // const { data: ensAvatar } = useEnsAvatar({ address })
@@ -15,7 +15,7 @@ import {
   useConnect()
   const { disconnect } = useDisconnect()
   const { data: eth } = useBalance({ address})
-  const { data } = useBalance({ address, token: '0xf311bEa7328B81804F67F82156190329E38413E8', decimals: 18, formatted:true})
+  const { data } = useBalance({ address, token: tokenAddress, decimals: 18, formatted:true})
   
  
   if (isConnected) {
