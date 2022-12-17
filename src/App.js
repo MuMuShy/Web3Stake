@@ -15,6 +15,12 @@ import{
   Select,
   Text,
   VStack,
+  useDisclosure,
+  Alert,
+  AlertIcon,
+  AlertDescription,
+  AlertTitle,
+  CloseButton
 }from "@chakra-ui/react"
 import{
   useAccount,
@@ -352,7 +358,13 @@ const abi = [
 	}
 ]
 function App() {
-  const [stakeValue, setstakeValue] = useState('')
+	const {
+		isOpen: isVisible,
+		onClose,
+		onOpen,
+	} = useDisclosure({ defaultIsOpen: false })
+  const [errorMessage,setErrorMessage ] = useState('');
+  const [stakeValue, setstakeValue] = useState('');
   const handleStakeValueChange = (event) => setstakeValue(event.target.value);
 
   const { data, isError, isLoading, write } = useContractWrite({
@@ -361,19 +373,37 @@ function App() {
     functionName: 'stakeToken',
     args: [stakeValue.toString()+"000000000000000000"],
     onError(error) {
-      console.log('Error', error)
+		setErrorMessage('請確定輸入金額,第一次使用請點選右上角核准授權智能合約');
+		onOpen();
     },
     onSuccess(success) {
       console.log('success??', success)
     }
   })
 
+  const {write:claimReward} = useContractWrite({
+	address: stakeAddress,
+    abi: abi,
+    functionName: 'claimReward',
+    onError(error) {
+	  console.log('Error!@@@@@@@@@@', error)
+      setErrorMessage('請確認質押是否已結束 或是否有正確質押代幣');
+	  onOpen();
+    },
+    onSuccess(success) {
+      console.log('success??', success)
+    }
+  })
+
+  
+
   const { write:writeCancle } = useContractWrite({
     address: stakeAddress,
     abi: abi,
     functionName: 'cancleStake',
     onError(error) {
-      console.log('Error', error)
+		setErrorMessage('無法取消 請確認是否有正在質押');
+		onOpen();
     },
     onSuccess(success) {
       console.log('success??', success)
@@ -488,16 +518,39 @@ function App() {
       </HStack>
       <VStack>
         { accountData?(
-          <VStack>
-            <Text color={'white'}>質押開始時間: { stakeStart}</Text>
-            <Text color={'white'}>質押結束時間: { stakeEnd}</Text>
-            <Text color={'white'}>預計回報: {stakeAmountFinal} MuMu</Text>
-          </VStack>
-        ):(
-          <VStack>
-          </VStack>
-        )
+				<VStack>
+					<Text color={'white'}>質押開始時間: { stakeStart}</Text>
+					<Text color={'white'}>質押結束時間: { stakeEnd}</Text>
+					<Text color={'white'}>預計回報: {stakeAmountFinal} MuMu</Text>
+					<Button size = 'md' onClick={claimReward} backgroundColor="#4c9d3b" color="#f0f8ff">領取</Button>
+				</VStack>
+				
+				):(
+				<VStack>
+				</VStack>
+				)
+			
         }
+		{isVisible?(
+			<Alert status='error'>
+			<AlertIcon />
+			<Box>
+				<AlertTitle>錯誤!</AlertTitle>
+				<AlertDescription>
+				{errorMessage}
+				</AlertDescription>
+			</Box>
+			<CloseButton
+				alignSelf='flex-start'
+				position='relative'
+				right={-1}
+				top={-1}
+				onClick={onClose}
+			/>
+			</Alert>
+		) : (
+			<></>
+		)}
       </VStack>
       </CardBody>
       </Card>
