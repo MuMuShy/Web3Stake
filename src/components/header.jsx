@@ -637,7 +637,7 @@ export default function Nav() {
     address: tokenAddress,
     abi: tokenabi,
     functionName: 'approve',
-    args: [stakeAddress, ethers.utils.parseUnits(data?.formatted, 18)],
+    args: [stakeAddress, ethers.utils.parseUnits(data?data.formatted:'0', 18)],
     onError(error) {
       console.log(data);
       console.log('Error', error)

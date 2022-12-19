@@ -365,19 +365,15 @@ function App() {
 	} = useDisclosure({ defaultIsOpen: false })
   const [errorMessage,setErrorMessage ] = useState('');
   const [stakeValue, setstakeValue] = useState('');
-  var stakeutils = '1';
   const handleStakeValueChange = (event) => {
 	setstakeValue(event.target.value);
-	console.log(event.target.value);
-	stakeutils = ethers.utils.parseUnits(event.target.value, 18);
-	console.log(stakeutils);
   }
 
   const { data, isError, isLoading, write:writeStake } = useContractWrite({
     address: stakeAddress,
     abi: abi,
     functionName: 'stakeToken',
-    args: [stakeutils],
+    args: [ethers.utils.parseUnits(stakeValue?stakeValue:'1', 18).toString()],
     onError(error) {
 		console.log(error)
 		setErrorMessage('請確定輸入金額,第一次使用請點選右上角核准授權智能合約');
