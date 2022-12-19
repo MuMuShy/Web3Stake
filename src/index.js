@@ -40,7 +40,7 @@ root.render(
         <WithSubnavigation></WithSubnavigation>
         {/* <CollapsibleExample></CollapsibleExample> */}
         <App/>
-        {/* <SmallWithNavigation></SmallWithNavigation> */}
+        <SmallWithNavigation></SmallWithNavigation>
     </ChakraProvider>
     </WagmiConfig>
   </React.StrictMode>
