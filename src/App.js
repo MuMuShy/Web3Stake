@@ -3,7 +3,7 @@ import './App.css';
 import { useContractRead, useContractWrite,usePrepareContractWrite  } from 'wagmi'
 
 import { Profile } from './Profile';
-
+import { ethers } from 'ethers';
 import { Card, CardHeader, CardBody, CardFooter, Image, Input } from '@chakra-ui/react'
 import { useState } from 'react';
 import { format } from "date-fns";
@@ -365,14 +365,21 @@ function App() {
 	} = useDisclosure({ defaultIsOpen: false })
   const [errorMessage,setErrorMessage ] = useState('');
   const [stakeValue, setstakeValue] = useState('');
-  const handleStakeValueChange = (event) => setstakeValue(event.target.value);
+  var stakeutils = '1';
+  const handleStakeValueChange = (event) => {
+	setstakeValue(event.target.value);
+	console.log(event.target.value);
+	stakeutils = ethers.utils.parseUnits(event.target.value, 18);
+	console.log(stakeutils);
+  }
 
-  const { data, isError, isLoading, write } = useContractWrite({
+  const { data, isError, isLoading, write:writeStake } = useContractWrite({
     address: stakeAddress,
     abi: abi,
     functionName: 'stakeToken',
-    args: [stakeValue.toString()+"000000000000000000"],
+    args: [stakeutils],
     onError(error) {
+		console.log(error)
 		setErrorMessage('請確定輸入金額,第一次使用請點選右上角核准授權智能合約');
 		onOpen();
     },
@@ -471,7 +478,7 @@ function App() {
     <VStack
       justifyContent = "center"
       alignItems="center"
-      height="800" bg={'whiteAlpha.300'}
+      height="820" bg={'whiteAlpha.300'}
       spacing={4}
     >
       <Card backgroundColor='#000000'>
@@ -498,12 +505,11 @@ function App() {
           <HStack>
             <Button size = 'lg' onClick={connectWallet}>連結錢包</Button>
           </HStack>
-          
         ):(
           <VStack>
             <HStack>
             <Input placeholder='輸入質押金額' value={stakeValue} onChange={handleStakeValueChange}></Input>
-            <Button size = 'lg' onClick={write} backgroundColor="#4c9d3b" color="#f0f8ff">質押</Button>
+            <Button size = 'lg' onClick={writeStake} backgroundColor="#4c9d3b" color="#f0f8ff">質押</Button>
             </HStack>
             <HStack>
             <Text color={'white'} fontSize="2rem">目前質押: {stakeAmount}</Text><Avatar name='Prosper Otemuyiwa' src='https://mumu.tw/images/mumucoin.png' size={'md'}/>
@@ -513,7 +519,6 @@ function App() {
             
             <Text color={'white' } fontSize="1.5rem">利率(日息): {stakeRate} %</Text>
           </VStack>
-          
         )}
       </HStack>
       <VStack>
@@ -529,7 +534,6 @@ function App() {
 				<VStack>
 				</VStack>
 				)
-			
         }
 		{isVisible?(
 			<Alert status='error'>
@@ -554,19 +558,7 @@ function App() {
       </VStack>
       </CardBody>
       </Card>
-      <VStack
-        justifyContent = "center"
-        alignItems="center"
-        padding="10px 0"
-      >
-        
-
-      </VStack>
-      <VStack>
-      </VStack>
-
     </VStack>
-
   );
 }
 

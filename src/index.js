@@ -5,6 +5,7 @@ import App from './App';
 import WithSubnavigation from './components/header';
 import SmallWithNavigation from './components/footer'
 import reportWebVitals from './reportWebVitals';
+import CollapsibleExample from './components/rwdheader';
 import { ChakraProvider, Container } from '@chakra-ui/react'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { WagmiConfig, createClient, configureChains, mainnet, goerli } from 'wagmi'
@@ -37,8 +38,9 @@ root.render(
     <WagmiConfig client={client}>
     <ChakraProvider>
         <WithSubnavigation></WithSubnavigation>
+        {/* <CollapsibleExample></CollapsibleExample> */}
         <App/>
-        <SmallWithNavigation></SmallWithNavigation>
+        {/* <SmallWithNavigation></SmallWithNavigation> */}
     </ChakraProvider>
     </WagmiConfig>
   </React.StrictMode>

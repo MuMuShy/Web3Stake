@@ -1,4 +1,8 @@
-import { ReactNode } from 'react';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useContractRead, useContractWrite,usePrepareContractWrite  } from 'wagmi'
 import{
   useAccount,
@@ -7,29 +11,27 @@ import{
   useSwitchNetwork,
   useBalance,
 } from 'wagmi'
-import { ethers } from 'ethers';
 import { useClipboard } from '@chakra-ui/react'
 import { useState } from 'react';
 import {
-  Box,
-  Flex,
-  Avatar,
-  Link,
-  Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-  useDisclosure,
-  useColorModeValue,
-  Stack,
-  useColorMode,
-  Center,
-  Text
-} from '@chakra-ui/react';
-import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { BigNumber } from 'ethers';
+    Box,
+    Flex,
+    Avatar,
+    Link,
+    Button,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    MenuDivider,
+    useDisclosure,
+    useColorModeValue,
+    Stack,
+    useColorMode,
+    Center,
+    Text
+  } from '@chakra-ui/react';
+  import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 const tokenAddress = '0xF9f4Bb1aDCc0527FCa576532ea784EE90c1D7900'
 const stakeAddress = '0xb34c04509D0874f699cCCf9d32CF7CB4D56fdCa9'
 const abi = [
@@ -598,8 +600,8 @@ const tokenabi = [
     "type": "function"
   }
 ]
-export default function Nav() {
-  const [totalStaker, settotalStaker] = useState('')
+function CollapsibleExample() {
+    const [totalStaker, settotalStaker] = useState('')
   const [totalStakeToken, settotalStakeToken] = useState('')
   const {address: accountData} = useAccount()
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
@@ -637,68 +639,56 @@ export default function Nav() {
     address: tokenAddress,
     abi: tokenabi,
     functionName: 'approve',
-    args: [stakeAddress, ethers.utils.parseUnits(data?.formatted, 18)],
+    args: [stakeAddress, Number(data?.formatted).toString()+"000000000000000000"],
     onError(error) {
-      console.log(data);
       console.log('Error', error)
     },
     onSuccess(success) {
       console.log('success??', success)
-      
     }
   })
-  
   return (
-    <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
-        <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Box>MuMuStake</Box>
-          <Text>總質押人數: {totalStaker}</Text>
-          <Text>總質押金額: {totalStakeToken} MUMU</Text>
-          <Link href={'https://app.uniswap.org/#/swap'} target='_blank'>前往購買MUMU (Goeril測試網)</Link>
-          <Button onClick={onCopy}>{hasCopied ? "Copied!" : "點我複製TokenAddress"}</Button>
-          <Flex alignItems={'center'}>
-            <Stack direction={'row'} spacing={7}>
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Container>
+        <Navbar.Brand href="#home">MUMU-STAKE</Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link href="#features">總質押人數: {totalStaker}</Nav.Link>
+            <Nav.Link href="#pricing">總質押金額: {totalStakeToken} MUMU</Nav.Link>
             <Button onClick={toggleColorMode}>
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-              </Button>
-            <Button size = 'md' onClick={disconnectWallet} backgroundColor="#ff002e" color="#f0f8ff">斷開錢包</Button>
-              
-              <Button size = 'md' onClick={write} backgroundColor="#ff002e" color="#f0f8ff">核准</Button>
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  rounded={'full'}
-                  variant={'link'}
-                  cursor={'pointer'}
-                  minW={0}>
-                  <Avatar
-                    size={'sm'}
-                    src={'https://avatars.dicebear.com/api/male/username.svg'}
-                  />
-                </MenuButton>
-                <MenuList alignItems={'center'}>
-                  <br />
-                  <Center>
-                    <Avatar
-                      size={'2xl'}
-                      src={'https://avatars.githubusercontent.com/u/44767582?v=4'}
-                    />
-                  </Center>
-                  <br />
-                  <Center>
-                  <p>{accountData}</p>              
-                  </Center>
-                  <br />
-                  <MenuDivider />
-                  <MenuItem>{data?.formatted} {data?.symbol}</MenuItem>
-                  <MenuItem>{eth?.formatted} {eth?.symbol}</MenuItem>
-                </MenuList>
-              </Menu>
-            </Stack>
-          </Flex>
-        </Flex>
-      </Box>
-    </>
+            </Button>
+            <NavDropdown title="Dropdown" id="collasible-nav-dropdown" variant="Secondary">
+              <NavDropdown.Item href="#action/3.1" variant="Secondary">
+                <Nav.Link href='https://app.uniswap.org/#/swap' target='_blank' color='black'>前往購買MUMU (Goeril測試網)</Nav.Link>
+            </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.2">
+              <Button onClick={onCopy}>{hasCopied ? "Copied!" : "複製TokenAddress"}</Button>
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item href="#action/3.4">
+                Separated link
+              </NavDropdown.Item>
+            </NavDropdown>
+          </Nav>
+          <Nav>
+            <Nav.Link href="#deets">More deets</Nav.Link>
+            <Nav.Link eventKey={2} href="#memes">
+              Dank memes
+            </Nav.Link>
+            </Nav>
+          <Nav>
+            <Nav.Link href="#deets">More deets</Nav.Link>
+            <Nav.Link eventKey={2} href="#memes">
+              Dank memes
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }
+
+export default CollapsibleExample;
